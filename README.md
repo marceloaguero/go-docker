@@ -42,7 +42,7 @@ And run it with:
 
 Note that the production image is much smaller than the development one.
 
-If you need a *really* light image, you can use Dockerfile.prod.minimum file to generate a "compressed" binary version of your application:
+If you need a **really** light image, you can use Dockerfile.prod.minimum file to generate a "compressed" binary version of your application:
 
     docker build -t go-docker-prod-min -f Dockerfile.prod.minimum .
 
