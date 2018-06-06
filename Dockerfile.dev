@@ -1,0 +1,20 @@
+FROM golang:1.10-stretch
+
+# Install dep (for dependencies/vendoring) & gin (only for live reloading)
+RUN go get github.com/golang/dep/cmd/dep \
+ && go get github.com/codegangsta/gin
+
+WORKDIR /go/src/app
+
+COPY Gopkg.toml .
+COPY Gopkg.lock .
+
+RUN dep ensure --vendor-only
+
+COPY src src
+
+CMD ["go", "run", "src/main.go"]
+
+## live reloading usage:
+# $ docker build -f Dockerfile.dev -t go-docker-dev .
+# $ docker run --rm -it -p 8080:8080 -v $(pwd):/go/src/app go-docker-dev gin --path src --port 8080 run main.go

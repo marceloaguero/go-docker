@@ -1,0 +1,25 @@
+FROM golang:1.10-stretch as builder
+
+RUN go get github.com/golang/dep/cmd/dep
+
+WORKDIR /go/src/app
+
+COPY Gopkg.toml .
+COPY Gopkg.lock .
+
+RUN dep ensure --vendor-only
+
+COPY src src
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main src/main.go
+
+FROM alpine:3.7
+
+# add ca-certificates in case you need them
+RUN apk add --no-cache ca-certificates
+
+WORKDIR /root
+
+COPY --from=builder /go/src/app/main .
+
+CMD ["./main"]
